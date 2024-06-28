@@ -3,7 +3,7 @@
 #include<stdbool.h>
 
 #define MAX_PAGES 20
-#define MAX_FRAMES 4
+#define MAX_FRAMES 3
 
 typedef struct{
     int page_number;
@@ -93,8 +93,8 @@ void LRU(Page pages[],int page_size){
 }
 
 int main(){
-    int page_list[MAX_PAGES]={7,2,7,3,2,5,3,4,6,7,7,1,5,6,1}; //page numbers
-    int page_size=15; //no. of pages
+    int page_list[MAX_PAGES]={7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1}; //page numbers
+    int page_size=20; //no. of pages
 
     Page pages[MAX_PAGES];
     for(int i=0;i<page_size;i++){
@@ -104,8 +104,11 @@ int main(){
     }
     printf("FIFO page replacement:\n");
     FIFO(pages,page_size);
+    printf("\n");
     printf("LRU page replacement:\n");
     LRU(pages,page_size);
     // printf("LFU page replacement:\n");
     // LFU(pages,page_size);
 }
+
+//7,2,7,3,2,5,3,4,6,7,7,1,5,6,1
