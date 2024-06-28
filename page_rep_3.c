@@ -137,6 +137,64 @@ void LFU(Page pages[],int num){
     printf("page faults: %d\n",page_faults);
 }
 
+int predict_optimal(Page frames[],int num_frames,Page pages[],int num_pages,int index){
+    int result=-1;
+    int farthest=index;
+    for(int i=0;i<num_frames;i++){
+        int j;
+        for(j=index;j<num_pages;j++){
+            if(frames[i].page_number==pages[j].page_number){
+                if(farthest<j){
+                    farthest=j;
+                    result=i;
+                }
+                break;
+            }
+        }
+        if(j==num_pages)
+            return i;
+    }
+    return (result==-1) ? 0 : result;
+}
+
+void OPTIMAL(Page pages[],int num){
+    Page frames[MAX_FRAMES];
+    for(int i=0;i<MAX_FRAMES;i++){
+        frames[i].page_number=-1;
+        frames[i].counter=frames[i].timestamp=0;
+    }
+    int frame_pointer=0;
+    int page_faults=0;
+    for(int i=0;i<num;i++){
+        bool page_fault=true;
+        for(int j=0;j<MAX_FRAMES;j++){
+            if(frames[j].page_number==pages[i].page_number){
+                page_fault=false;
+                break;
+            }
+        }
+        if(page_fault){
+            page_faults++;
+            if(frame_pointer<MAX_FRAMES){
+                frames[frame_pointer]=pages[i];
+                printf("page %d loaded into frame %d\n",pages[i].page_number,frame_pointer);
+                frame_pointer++;
+            }
+            else{
+                int flag=predict_optimal(frames,MAX_FRAMES,pages,num,i+1);
+                printf("page %d replaced page %d in frame %d\n", pages[i].page_number,frames[flag].page_number, flag);
+                frames[flag] = pages[i];
+            }
+        }
+        printf("frames: ");
+        for(int k=0;k<MAX_FRAMES;k++){
+            printf("%d  ",frames[k].page_number);
+        }
+        printf("\n");
+    }
+    printf("page faults: %d\n",page_faults);
+}
+
 int main(){
     int page_list[MAX_PAGES]={7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1}; //page numbers
     int page_size=20; //no. of pages
@@ -147,13 +205,15 @@ int main(){
         pages[i].counter=0;
         pages[i].timestamp=0;
     }
-    printf("FIFO page replacement:\n");
-    FIFO(pages,page_size);
-    printf("\n");
-    printf("LRU page replacement:\n");
-    LRU(pages,page_size);
+    // printf("FIFO page replacement:\n");
+    // FIFO(pages,page_size);
+    // printf("\n");
+    // printf("LRU page replacement:\n");
+    // LRU(pages,page_size);
     // printf("LFU page replacement:\n");
     // LFU(pages,page_size);
+    printf("optimal page replacement:\n");
+    OPTIMAL(pages,page_size);
 }
 
 //7,2,7,3,2,5,3,4,6,7,7,1,5,6,1
