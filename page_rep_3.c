@@ -92,6 +92,51 @@ void LRU(Page pages[],int page_size){
         printf("number of page faults:%d\n",page_faults);
 }
 
+void LFU(Page pages[],int num){
+    Page frames[MAX_FRAMES];
+    for(int i=0;i<MAX_FRAMES;i++){
+        frames[i].page_number=-1;
+        frames[i].counter=frames[i].timestamp=0;
+    }
+    int frame_pointer=0;
+    int page_faults=0;
+    for(int i=0;i<num;i++){
+        bool page_fault=true;
+        for(int j=0;j<MAX_FRAMES;j++){
+            if(frames[j].page_number==pages[i].page_number){
+                page_fault=false;
+                frames[j].counter++;
+                break;
+            }
+        }
+        if(page_fault){
+            page_faults++;
+            if(frame_pointer<MAX_FRAMES){
+                frames[frame_pointer]=pages[i];
+                printf("page %d loaded into frame %d\n",pages[i].page_number,frame_pointer);
+                frame_pointer++;
+            }
+            else{
+                int lfu=0;
+                for(int k=0;k<MAX_FRAMES;k++){
+                    if(frames[k].counter<frames[lfu].counter){
+                        lfu=k;
+                    }
+                }
+                printf("page %d replaced page %d in frame %d\n",pages[i].page_number,frames[lfu].page_number,lfu);
+                frames[lfu]=pages[i];
+                frames[lfu].counter=1;
+            }
+        }
+        printf("frames: ");
+        for(int k=0;k<MAX_FRAMES;k++){
+            printf("%d  ",frames[k].page_number);
+        }
+        printf("\n");
+    }
+    printf("page faults: %d\n",page_faults);
+}
+
 int main(){
     int page_list[MAX_PAGES]={7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1}; //page numbers
     int page_size=20; //no. of pages
