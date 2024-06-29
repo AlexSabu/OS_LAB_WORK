@@ -205,13 +205,13 @@ int main(){
         pages[i].counter=0;
         pages[i].timestamp=0;
     }
-    // printf("FIFO page replacement:\n");
-    // FIFO(pages,page_size);
-    // printf("\n");
-    // printf("LRU page replacement:\n");
-    // LRU(pages,page_size);
-    // printf("LFU page replacement:\n");
-    // LFU(pages,page_size);
+    printf("FIFO page replacement:\n");
+    FIFO(pages,page_size);
+    printf("\n");
+    printf("LRU page replacement:\n");
+    LRU(pages,page_size);
+    printf("LFU page replacement:\n");
+    LFU(pages,page_size);
     printf("optimal page replacement:\n");
     OPTIMAL(pages,page_size);
 }
