@@ -186,41 +186,6 @@ void C_LOOK(int request[],int initial_head_position,int num_requests){
     printf("C_LOOK...total head movt: %d\n",total_head_movt);
 }
 
-// int find_min_distance(int request[],bool visited[],int initial_head_position,int num_requests){
-//     int min_distance=INT_MAX;
-//     int min_index=-1;
-
-//     for(int i=0;i<num_requests;i++){
-//         if(!visited[i]){
-//             int distance=abs(request[i]-initial_head_position);
-//             if(distance<min_distance){
-//                 min_distance=distance;
-//                 min_index=i;
-//             }
-//         }
-//     }
-//     return min_index;
-// }
-
-// void SSTF(int request[],int initial_head_position,int num_requests){
-//     int total_head_movt=0;
-//     int current_head_position=initial_head_position;
-//     bool visited[num_requests];
-
-//     for(int i=0;i<num_requests;i++){
-//         visited[i]=false;
-//     }
-
-//     for(int count=0;count<num_requests;count++){
-//         int min_index=find_min_distance(request,visited,current_head_position,num_requests);
-//         total_head_movt+=abs(request[min_index]-current_head_position);
-//         current_head_position=request[min_index];
-//         visited[min_index]=true;
-//     }
-
-//     printf("SSTF...total head movt: %d\n",total_head_movt);
-// }
-
 void SSTF(int request[], int initial_head_position, int num_requests) {
     int total_head_movt = 0;
     int current_head_position = initial_head_position;
