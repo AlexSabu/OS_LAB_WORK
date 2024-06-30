@@ -150,6 +150,47 @@ void SJF(Process *process,int n){
     return;
 }
 
+void SRTF(Process *process,int n){
+    int time=0;
+    int total_turnaround=0,total_waiting=0;
+    int completed=0;
+    int prev=-1;
+    while(completed!=n){
+        int min_remaining=INT_MAX;
+        int min_index=-1;
+
+        for(int i=0;i<n;i++){
+            if(process[i].arrival<=time && process[i].remaining>0 && process[i].remaining<min_remaining){
+                min_remaining=process[i].remaining;
+                min_index=i;
+            }
+        }
+        if(min_index==-1){
+            time++;
+            continue;
+        }
+        if(min_index!=prev){
+            print_gantt(process[min_index].pid,time);
+            prev=min_index;
+        }
+        process[min_index].remaining--;
+        time++;
+        if(process[min_index].remaining==0){
+            process[min_index].completion = time;
+            process[min_index].turnaround = process[min_index].completion - process[min_index].arrival;
+            process[min_index].waiting = process[min_index].turnaround - process[min_index].burst;
+            total_turnaround += process[min_index].turnaround;
+            total_waiting += process[min_index].waiting;
+            completed++;
+        }
+    }
+    print_stats(process,n);
+    printf("avg tat: %f", 1.0*total_turnaround/n);
+    printf("avg wq: %f", 1.0*total_waiting/n);
+    printf("\n");
+    return;
+}
+
 void NonPreemtive_Priority(Process *process,int n){ //lower number = higher priority
     int time=0;
     int total_turnaround=0,total_waiting=0;
