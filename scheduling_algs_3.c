@@ -121,12 +121,60 @@ void SJF(Process *process,int n){
         }
 
         if(min_index==-1){
+            int min_at=INT_MAX;
             for(int i=0;i<n;i++){
-                if(process[i].remaining>0 && process[i].arrival>time){
-                    time=process[i].arrival;
-                    break;
+                if(process[i].remaining>0 && process[i].arrival<min_at){
+                    min_at=process[i].arrival;
                 }
             }
+            time=min_at;
+            print_gantt(-1,time);
+        }
+        else{
+            time+=process[min_index].burst;
+            process[min_index].remaining=0;
+            process[min_index].completion=time;
+            process[min_index].turnaround=process[min_index].completion-process[min_index].arrival;
+            process[min_index].waiting=process[min_index].turnaround-process[min_index].burst;
+            total_turnaround+=process[min_index].turnaround;
+            total_waiting+=process[min_index].waiting;
+
+            print_gantt(process[min_index].pid,time);
+            count++;
+        }
+    }
+    print_stats(process,n);
+    printf("avg tat: %f", 1.0*total_turnaround/n);
+    printf("avg wq: %f", 1.0*total_waiting/n);
+    printf("\n");
+    return;
+}
+
+void NonPreemtive_Priority(Process *process,int n){ //lower number = higher priority
+    int time=0;
+    int total_turnaround=0,total_waiting=0;
+    int count=0;
+
+    while(count<n){
+        int min_priority_no=INT_MAX;
+        int min_index=-1;
+
+        for(int i=0;i<n;i++){
+            if(process[i].remaining>0 && process[i].arrival<=time && process[i].priority<min_priority_no){
+                min_priority_no=process[i].priority;
+                min_index=i;
+            }
+        }
+
+        if(min_index==-1){
+            int min_at=INT_MAX;
+            for(int i=0;i<n;i++){
+                if(process[i].remaining>0 && process[i].arrival<min_at){
+                    min_at=process[i].arrival;
+                }
+            }
+            time=min_at;
+            print_gantt(-1,time);
         }
         else{
             time+=process[min_index].burst;
@@ -211,8 +259,12 @@ int main(){
     // Round_Robin(get_copy(process, n), n);
     // printf("\n");
 
-    printf("\nSJF\n");
-    SJF(get_copy(process, n), n);
+    // printf("\nSJF\n");
+    // SJF(get_copy(process, n), n);
+    // printf("\n");
+
+    printf("\nnon pre-emptive priority:\n");
+    NonPreemtive_Priority(get_copy(process, n), n);
     printf("\n");
 
     return 0;
