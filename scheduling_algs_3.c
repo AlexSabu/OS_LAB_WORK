@@ -185,7 +185,7 @@ void SRTF(Process *process,int n){
             total_waiting += process[min_index].waiting;
             completed++;
             print_gantt(process[min_index].pid, time); // Print when the process is completed
-            // prev = -1;
+            prev = -1;
         }
     }
     print_stats(process,n);
@@ -361,10 +361,6 @@ int main(){
 
     printf("\nSRTF:\n");
     SRTF(get_copy(process, n), n);
-    printf("\n");
-
-    printf("\pre-emptive priority:\n");
-    Preemtive_Priority(get_copy(process, n), n);
     printf("\n");
 
     return 0;
