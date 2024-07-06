@@ -169,9 +169,11 @@ void SRTF(Process *process,int n){
             time++;
             continue;
         }
-        if(min_index!=prev){
-            print_gantt(process[min_index].pid,time);
-            prev=min_index;
+        if (prev != min_index) {
+            if (prev != -1) {
+                print_gantt(process[prev].pid, time);
+            }
+            prev = min_index;
         }
         process[min_index].remaining--;
         time++;
@@ -182,6 +184,8 @@ void SRTF(Process *process,int n){
             total_turnaround += process[min_index].turnaround;
             total_waiting += process[min_index].waiting;
             completed++;
+            print_gantt(process[min_index].pid, time); // Print when the process is completed
+            // prev = -1;
         }
     }
     print_stats(process,n);
@@ -228,6 +232,53 @@ void NonPreemtive_Priority(Process *process,int n){ //lower number = higher prio
 
             print_gantt(process[min_index].pid,time);
             count++;
+        }
+    }
+    print_stats(process,n);
+    printf("avg tat: %f", 1.0*total_turnaround/n);
+    printf("avg wq: %f", 1.0*total_waiting/n);
+    printf("\n");
+    return;
+}
+
+void Preemtive_Priority(Process *process,int n){
+    int time=0;
+    int total_turnaround=0,total_waiting=0;
+    int completed=0;
+    int prev=-1;
+
+    while(completed!=n){
+        int min_priority_no=INT_MAX;
+        int min_index=-1;
+
+        for(int i=0;i<n;i++){
+            if(process[i].arrival <= time && process[i].remaining > 0 && process[i].priority < min_priority_no){
+                min_priority_no = process[i].priority;
+                min_index = i;
+            }
+        }
+        if (min_index == -1) {
+            time++;
+            continue;
+        }
+        if (prev != min_index) {
+            if (prev != -1) {
+                print_gantt(process[prev].pid, time);
+            }
+            prev = min_index;
+        }
+        process[min_index].remaining--;
+        time++;
+
+        if (process[min_index].remaining == 0) {
+            process[min_index].completion = time;
+            process[min_index].turnaround = process[min_index].completion - process[min_index].arrival;
+            process[min_index].waiting = process[min_index].turnaround - process[min_index].burst;
+            total_turnaround += process[min_index].turnaround;
+            total_waiting += process[min_index].waiting;
+            completed++;
+            print_gantt(process[min_index].pid, time); // Print when the process is completed
+            prev = -1;
         }
     }
     print_stats(process,n);
@@ -304,8 +355,16 @@ int main(){
     // SJF(get_copy(process, n), n);
     // printf("\n");
 
-    printf("\nnon pre-emptive priority:\n");
-    NonPreemtive_Priority(get_copy(process, n), n);
+    // printf("\nnon pre-emptive priority:\n");
+    // NonPreemtive_Priority(get_copy(process, n), n);
+    // printf("\n");
+
+    printf("\nSRTF:\n");
+    SRTF(get_copy(process, n), n);
+    printf("\n");
+
+    printf("\pre-emptive priority:\n");
+    Preemtive_Priority(get_copy(process, n), n);
     printf("\n");
 
     return 0;
