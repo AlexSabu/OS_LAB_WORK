@@ -359,8 +359,12 @@ int main(){
     // NonPreemtive_Priority(get_copy(process, n), n);
     // printf("\n");
 
-    printf("\nSRTF:\n");
-    SRTF(get_copy(process, n), n);
+    // printf("\nSRTF:\n");
+    // SRTF(get_copy(process, n), n);
+    // printf("\n");
+
+    printf("\npre-emptive priority:\n");
+    Preemtive_Priority(get_copy(process, n), n);
     printf("\n");
 
     return 0;
