@@ -109,3 +109,58 @@ int main() {
 
     return 0;
 }
+
+// #include<stdio.h>
+// #include<stdlib.h>
+// #include<unistd.h>
+// #include<sys/ipc.h>
+// #include<sys/shm.h>
+// #include<sys/types.h>
+// #include<sys/wait.h>
+// #include<semaphore.h>
+// #include<string.h>
+
+// int main(){
+//     key_t key;
+//     int shmid;
+//     char* pointer;
+//     pid_t pid;
+//     sem_t *sem;
+//     int sem_val;
+
+//     shmid=shmget(IPC_PRIVATE,sizeof(sem_t),IPC_CREAT | 0666);
+//     sem=shmat(shmid,NULL,0);
+
+//     sem_init(sem,1,0);
+
+//     key=ftok(".",'s');
+
+//     shmid=shmget(key,1024,IPC_CREAT | 0666);
+
+//     pointer=shmat(shmid,NULL,0);
+
+//     strcpy(pointer,"hello");
+//     printf("shm: %s\n",pointer);
+
+//     pid=fork();
+//     if(pid==0){
+//         strcat(pointer," child");
+//         printf("%s\n",pointer);
+//         sem_post(sem);
+//     }
+//     else if(pid>0){
+//         sem_wait(sem);
+//         strcat(pointer," parent");
+//         printf("%s\n",pointer);
+//     }
+//     else{
+//         perror("fork");
+//         exit(1);
+//     }
+
+//     shmdt(pointer);
+//     shmdt(sem);
+
+//     shmctl(shmid,IPC_RMID,NULL);
+// }
+
