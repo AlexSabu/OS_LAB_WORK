@@ -1,4 +1,4 @@
-// fibonacci_program.c
+// fibonacci_program
 
 #include <stdio.h>
 
