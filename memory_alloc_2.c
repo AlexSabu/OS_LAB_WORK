@@ -12,9 +12,13 @@ typedef struct{
 Partition memory[NUM_PARTIOTNS];
 
 void initialize(){
+    int temp[5]={160,200,500,250,100};
+    int offset=0;
     for(int i=0;i<NUM_PARTIOTNS;i++){
-        memory[i].size=MEMORY_SIZE/NUM_PARTIOTNS;
-        memory[i].start=i*memory[i].size;
+        //memory[i].size=MEMORY_SIZE/NUM_PARTIOTNS;
+        memory[i].size=temp[i];
+        memory[i].start=offset;
+        offset+=memory[i].size;
         memory[i].is_allocated=0;
     }
 }
